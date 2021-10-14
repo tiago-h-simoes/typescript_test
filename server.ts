@@ -5,6 +5,9 @@ const request   = require('request-promise');
 // Limit the amount of debugging of SQL expressions
 const trimLogsSize : number = 200;
 
+// print process.argv
+var github_user = process.argv.slice(2);
+
 // Database interface
 interface DBOptions
   { host      : string
@@ -48,7 +51,7 @@ const db = pgp(options);
 
 db.none('CREATE TABLE if not exists github_users (id BIGSERIAL, login TEXT, name TEXT, company TEXT)')
 .then(() => request({
-  uri: 'https://api.github.com/users/gaearon',
+  uri: `https://api.github.com/users/${github_user}`,
   headers: {
         'User-Agent': 'Request-Promise'
     },
