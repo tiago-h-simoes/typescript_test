@@ -118,9 +118,9 @@ function getArg() {
         .then(() => process.exit(0));
         break;
       case 'stats':
-        db.any(`Select name from github_users where location ~* 'lisbon'`)
+        db.any(`select location, count(*) t from github_users group by location;`)
         .then(data => data.forEach(element => {
-          console.log(element.name);
+          console.log(element.location, element.t);
         }))
         .then(() => process.exit(0));
         break;
