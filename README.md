@@ -8,4 +8,6 @@
 
 ## Docker Interaction
 
-Examples found in test.sh
+1. docker-compose up -d
+2. docker exec lovely-node npm install
+3. Examples found in test.sh
