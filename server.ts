@@ -44,6 +44,12 @@ const pgpDefaultConfig = {
 
 interface GithubUsers
   { id : number,
+    gitid : number,
+    login: string,
+    name: string,
+    company: string,
+    location: string,
+    followers : number,
   };
 
 const pgp = pgPromise(pgpDefaultConfig);
