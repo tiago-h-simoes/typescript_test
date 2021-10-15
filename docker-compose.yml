@@ -1,0 +1,21 @@
+---
+version: '2.3'
+
+services:
+  database:
+    image: postgres:10
+    container_name: lovely-database
+    env_file:
+      - .postgres.env
+    environment:
+      - TZ=Europe/Lisbon
+    ports:
+      - "5432:5432"
+  nodejs:
+    image: node:10.9
+    stdin_open: true # docker run -i
+    tty: true # docker run -t
+    container_name: lovely-node
+    volumes:
+      - ./lovelyfiles:/opt/lovelyfiles
+    working_dir: /opt/lovelyfiles

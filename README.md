@@ -6,3 +6,6 @@
 4. Run `npm run test` to get the program running (modify the user and password if needed)
 5. Examine the typescript code under `server.ts`
 
+## Docker Interaction
+
+Examples found in test.sh
