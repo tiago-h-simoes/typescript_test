@@ -12,7 +12,7 @@ docker exec lovely-node npm run test -- --user Mozcatel
 docker exec lovely-node npm run test -- --user nersoh
 docker exec lovely-node npm run test -- --user ramonabejan
 ## List users in Lisbon
-docker exec lovely-node npm run test -- --list
+docker exec lovely-node npm run test -- --list Lisbon 'Braga - Portugal'
 ## Display statistics
 docker exec lovely-node npm run test -- --stats
 ## Truncate table
