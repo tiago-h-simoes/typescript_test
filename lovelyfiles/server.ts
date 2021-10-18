@@ -12,7 +12,7 @@ const trimLogsSize: number = 200;
 // https://github.com/75lb/command-line-args
 const optionDefinitions = [
   { name: 'user', alias: 'u', type: String },
-  { name: 'list', alias: 'l', type: String },
+  { name: 'list', alias: 'l', type: String, multiple: true },
   { name: 'stats', alias: 's', type: Boolean },
   { name: 'trunc', alias: 't', type: Boolean }
 ]
@@ -134,13 +134,15 @@ function addUser(){
 }
 
 function list(){
-  db.any(`Select name from github_users where location ~* '${cmdOptions.list}'`)
-  .then(data => {
-    console.log(`Location: ${cmdOptions.user}`);
-    data.forEach(element => {
-    console.log(element.name);
-  })})
-  .then(() => process.exit(0));
+  cmdOptions.list.forEach(element => {
+    db.any(`Select name from github_users where location ~* '${element}'`)
+    .then(data => {
+      console.log(`Location: ${element}`);
+      data.forEach(element => {
+      console.log(element.name);
+    })})
+    .then(() => process.exit(0));
+  });
 }
 
 function trunc(){
@@ -150,8 +152,8 @@ function trunc(){
 function stats(){
   return db.any(`select location, count(*) t from github_users group by location;`)
   .then(data => {
-    console.log("Location\tTotal");
+    console.log("Location \t Total");
     data.forEach(element => {
-      console.log(`${element.location}\t${element.t}`);
+      console.log(`${element.location} \t ${element.t}`);
   })});
 }
