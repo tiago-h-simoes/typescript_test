@@ -10,7 +10,7 @@ services:
     environment:
       - TZ=Europe/Lisbon
     ports:
-      - "5432:5432"
+      - "55432:5432"
   nodejs:
     image: node:10.9
     stdin_open: true # docker run -i
