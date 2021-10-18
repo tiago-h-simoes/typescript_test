@@ -8,6 +8,15 @@
 
 ## Docker Interaction
 
+Postgres is running on port 55432, if needed it can be changed in the docker-compose.yml.
+Example:
+
+    ```
+    ports:
+    
+            - "<new port>:5432"
+    ```
+
 1. docker-compose up -d
 2. docker exec lovely-node npm install
 3. Examples found in test.sh
