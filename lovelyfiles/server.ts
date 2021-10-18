@@ -1,3 +1,5 @@
+import { statSync } from "fs";
+
 const pgPromise = require('pg-promise');
 const R = require('ramda');
 const request = require('request-promise');
@@ -16,7 +18,6 @@ const optionDefinitions = [
 ]
 const commandLineArgs = require('command-line-args')
 const cmdOptions = commandLineArgs(optionDefinitions)
-var github_user = cmdOptions.user;
 
 // Database interface
 interface DBOptions {
@@ -83,52 +84,74 @@ function getArg() {
   for (var k in cmdOptions) {
     switch (k) {
       case 'user':
-        request({
-          uri: `https://api.github.com/users/${github_user}`,
-          headers: {
-            'User-Agent': 'Request-Promise'
-          },
-          json: true
-        }).then((data: GithubUsers) => db.one(
-          `INSERT INTO github_users 
-            ( 
-              gitid,
-              login,
-              name,
-              company,
-              location,
-              followers
-              ) VALUES (
-                $[id],
-                $[login],
-                $[name],
-                $[company],
-                $[location],
-                $[followers]
-                ) RETURNING id`, data)
-        ).then(({ id }) => console.log(id))
-          .catch((error) => console.log(error.detail))
-          .then(() => process.exit(0));
+        stats();
+        addUser();
         break;
       case 'list':
-        db.any(`Select name from github_users where location ~* 'lisbon'`)
-        .then(data => data.forEach(element => {
-          console.log(element.name);
-        }))
-        .then(() => process.exit(0));
+        stats();
+        list();
         break;
       case 'stats':
-        db.any(`select location, count(*) t from github_users group by location;`)
-        .then(data => data.forEach(element => {
-          console.log(element.location, element.t);
-        }))
-        .then(() => process.exit(0));
+        stats().then(() => process.exit(0));
         break;
       case 'trunc':
-        db.none('truncate table github_users').then(() => process.exit(0));
+        stats();
+        trunc();
         break;
       default:
         break;
     }
   }
+}
+
+function addUser(){
+  request({
+    uri: `https://api.github.com/users/${cmdOptions.user}`,
+    headers: {
+      'User-Agent': 'Request-Promise'
+    },
+    json: true
+  }).then((data: GithubUsers) => db.one(
+    `INSERT INTO github_users 
+      ( 
+        gitid,
+        login,
+        name,
+        company,
+        location,
+        followers
+        ) VALUES (
+          $[id],
+          $[login],
+          $[name],
+          $[company],
+          $[location],
+          $[followers]
+          ) RETURNING id`, data)
+  ).then(({ id }) => console.log(id))
+    .catch((error) => console.log(error.detail))
+    .then(() => process.exit(0));
+}
+
+function list(){
+  db.any(`Select name from github_users where location ~* '${cmdOptions.list}'`)
+  .then(data => {
+    console.log(`Location: ${cmdOptions.user}`);
+    data.forEach(element => {
+    console.log(element.name);
+  })})
+  .then(() => process.exit(0));
+}
+
+function trunc(){
+  db.none('truncate table github_users').then(() => process.exit(0));
+}
+
+function stats(){
+  return db.any(`select location, count(*) t from github_users group by location;`)
+  .then(data => {
+    console.log("Location\tTotal");
+    data.forEach(element => {
+      console.log(`${element.location}\t${element.t}`);
+  })});
 }
