@@ -30,10 +30,10 @@ interface DBOptions {
 
 // Actual database options
 const options: DBOptions = {
-  user: 'lovelystay_test',
-  password: 'lovelystay',
-  host: 'database',
-  database: 'lovelystay_test',
+  user: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+  host: process.env.POSTGRES_HOST,
+  database: process.env.POSTGRES_DATABASE,
 };
 
 console.info('Connecting to the database:',

@@ -16,6 +16,8 @@ services:
     stdin_open: true # docker run -i
     tty: true # docker run -t
     container_name: lovely-node
+    env_file:
+      - .postgres.env
     volumes:
       - ./lovelyfiles:/opt/lovelyfiles
     working_dir: /opt/lovelyfiles
